@@ -1,0 +1,54 @@
+---
+title: "Advent of Code Day 1"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+
+dat <- tibble::tribble(~"left", ~"right",
+                       3, 4,
+                       4, 3,
+                       2, 5,
+                       1, 3,
+                       3, 9,
+                       3, 3)
+
+input_dat <- read_delim("input_day_one.txt", col_names = FALSE) %>% 
+  select(left = X1, right =X4)
+
+```
+
+```{r}
+total_dist <- function(input) {
+  
+  left <- input %>% 
+    select(left_col = left) %>% 
+    arrange(left_col)
+  
+  right <- input %>% 
+    select(right_col = right) %>% 
+    arrange(right_col)
+  
+  #Part One
+    
+    total <- bind_cols(left, right) %>% 
+      mutate(dist_diff = abs(left_col-right_col)) %>% 
+      rowwise() %>% 
+      mutate(sim_score = sum(left_col == .$right_col) * left_col) %>% 
+      ungroup() %>% 
+      summarize(total_distance = sum(dist_diff),
+                 sim_score_total = sum(sim_score))
+       
+     return(total)
+
+}
+
+
+
+total_dist(input_dat)
+total_dist(dat)
+
+
+```

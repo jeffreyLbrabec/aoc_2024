@@ -1,0 +1,68 @@
+---
+title: "Advent of Code Day 3"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+
+dat_three <- c("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))") 
+
+input_three <- read_lines("input_day_three.txt") %>% 
+  paste0(collapse = "")
+```
+
+```{r}
+#Part One
+mul_extractor <- function(input) {
+  
+  str_extract_all(input, pattern = "mul\\(\\d+,\\d+\\)") %>% 
+    unlist() %>% 
+    as_tibble() %>% 
+    mutate(value = str_extract(string = value, pattern = "\\d+,\\d+")) %>% 
+    separate(value, into = c("col_one", "col_two"), sep = ",") %>%
+    mutate(across(col_one:col_two, as.numeric),
+           product = col_one * col_two) %>% 
+    summarize(prod_total = sum(product))
+  
+  
+}
+
+mul_extractor(input_three)
+
+```
+
+```{r}
+#Part Two
+
+mul_extractor_dosndonts <- function(input) {
+  
+  str_remove_all(input, pattern = "don't\\(\\).*?do\\(\\)") %>% 
+    str_extract_all(pattern = "mul\\(\\d+,\\d+\\)") %>% 
+    unlist() %>% 
+    as_tibble() %>% 
+    mutate(value = str_extract(string = value, pattern = "\\d+,\\d+")) %>% 
+    separate(value, into = c("col_one", "col_two"), sep = ",") %>%
+    mutate(across(col_one:col_two, as.numeric),
+           product = col_one * col_two) %>% 
+    summarize(prod_total = sum(product))
+  
+  
+}
+
+mul_extractor_dosndonts(input_three)
+
+
+str_remove_all(input_three, pattern = "don't\\(\\).*?do\\(\\)") %>% 
+  str_extract_all(pattern = "mul\\(\\d+,\\d+\\)") %>% 
+  unlist() %>% 
+  as_tibble() %>% 
+  mutate(value = str_extract(string = value, pattern = "\\d+,\\d+")) %>% 
+  separate(value, into = c("col_one", "col_two"), sep = ",") %>%
+  mutate(across(col_one:col_two, as.numeric),
+         product = col_one * col_two) %>% 
+  summarize(prod_total = sum(product))
+
+```
+

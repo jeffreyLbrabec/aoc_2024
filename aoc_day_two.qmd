@@ -1,0 +1,57 @@
+---
+title: "Advent of Code Day 2"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+
+dat_two <- c("7 6 4 2 1",
+             "1 2 7 8 9",
+             "9 7 6 2 1",
+             "1 3 2 4 5",
+             "8 6 4 4 1",
+             "1 3 6 7 9")
+
+read_list <- function(path, sep = "", type = identity) {
+  lines <- readLines(path)
+  res <- strsplit(lines, sep)
+  res <- lapply(res, type)
+  res
+}
+
+input_two <- read_list("input_day_two.txt", " ", as.integer)
+input_two <- read_lines("input_day_two.txt")
+
+```
+
+```{r}
+#From https://emilhvitfeldt.github.io/rstats-adventofcode/2024.html?panelset_001=day-2
+
+safe <- function(x) {
+  diffs <- diff(x)
+  cond1 <- all(diffs > 0) || all(diffs < 0)
+  cond2 <- all(abs(diffs) >= 1) && all(abs(diffs) <= 3)
+  cond1 && cond2
+}
+
+skip_safe <- function(x) {
+  is_safe <- FALSE
+  for (i in seq_along(x)) {
+    if (safe(x[-i])) {
+      is_safe <- TRUE
+      break
+    }
+  }
+  is_safe
+}
+
+
+vapply(input_two, skip_safe, logical(1)) |>
+  sum()
+
+map_vec(dat_two,safety_check)
+sum(map_vec(input_two, safety_check) == "SAFE")
+```
+
